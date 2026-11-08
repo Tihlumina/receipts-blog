@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipts: teaching an app to remember who was right</title>
+<meta name="description" content="How I used Walrus Memory and Tatum to turn predictions into a track record you can trust.">
+<meta property="og:title" content="Receipts: teaching an app to remember who was right">
+<meta property="og:description" content="Predictions stored on Walrus Memory, verified with Tatum, scored for trust.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%BE%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f172a;--muted:#667085;--line:#e6e8ec;--surface:#f7f8fa;--accent:#2f6fed;--miss:#c23b2f;--paper:#f2f1ec}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.7 "Instrument Sans",system-ui,sans-serif}
+main{max-width:680px;margin:0 auto;padding:56px 22px 80px}
+h1,h2{font-family:Fraunces,Georgia,serif;letter-spacing:-.02em;line-height:1.15;font-weight:600}
+h1{font-size:clamp(2.1rem,6vw,3.2rem);margin:.3em 0}
+h2{font-size:1.7rem;margin:2.4em 0 .5em}
+.kicker{color:var(--accent);font-weight:600;font-size:.9rem}
+.sub{color:var(--muted);font-size:1.2rem;margin:0 0 .8em}
+.by{color:var(--muted);font-size:.9rem;margin:0 0 2em}
+a{color:var(--accent)}
+.video{display:block;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,.08)}
+.video img{display:block;width:100%;height:auto}
+.cap{color:var(--muted);font-size:.85rem;text-align:center;margin:.6em 0 0}
+ul{padding-left:1.2em}li{margin:.4em 0}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--surface);padding:.1em .35em;border-radius:6px}
+table{width:100%;border-collapse:collapse;margin:1.2em 0;font-size:.95rem}
+th,td{text-align:left;padding:.6em .8em;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500;font-size:.85rem}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1em 1.2em;margin:1.5em 0}
+.demo{display:flex;flex-direction:column;align-items:center;margin:2.2em 0}
+.receipt{width:290px;background:var(--paper);padding:22px 22px 14px;font:13px/1.5 "JetBrains Mono",monospace;filter:drop-shadow(0 10px 22px rgba(15,23,42,.14))}
+.receipt:after{content:"";display:block;height:12px;margin:14px -22px -14px;background:linear-gradient(135deg,var(--paper) 25%,transparent 25%) -6px 0,linear-gradient(225deg,var(--paper) 25%,transparent 25%) -6px 0;background-size:12px 12px;transform:translateY(12px)}
+.receipt hr{border:0;border-top:1px dashed var(--ink);margin:10px 0}
+.receipt .r{display:flex;justify-content:space-between}
+.stamp{display:inline-block;transform:rotate(-6deg);border:2px solid var(--miss);color:var(--miss);font-weight:600;font-size:20px;padding:2px 12px;margin:14px 0}
+footer{margin-top:4em;padding-top:1.5em;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<article>
+<p class="kicker">Walrus x Tatum Hackathon: Total Recall</p>
+<h1>Receipts: teaching an app to remember who was right</h1>
+<p class="sub">How I used Walrus Memory and Tatum to turn predictions into a track record you can trust.</p>
+<p class="by">By TIHLUMINA · November 2026</p>
+
+<a class="video" href="https://youtu.be/0rq948BNKg8?si=eVs8O1crA2QbSyYh"><img src="https://img.youtube.com/vi/0rq948BNKg8/hqdefault.jpg" alt="Watch the Receipts demo on YouTube"></a>
+<p class="cap">Watch the 2-minute demo · <a href="https://receipts-two-rho.vercel.app/">Try the live app</a> · <a href="https://github.com/Tihlumina/receipts">Read the code</a></p>
+
+<h2>The problem</h2>
+<p>Everyone online makes predictions. An analyst calls a price target, a tipster backs a team, a friend swears a coin is about to run. A week later the loud calls that missed are forgotten, and the lucky ones are remembered forever. Nobody keeps score, and an app that forgets everything between sessions can’t keep score either.</p>
+<p>That is the gap <strong>Receipts</strong> fills.</p>
+
+<h2>What Receipts does</h2>
+<p>You log a call, such as “SUI will be at or above $1 by Friday, 70% sure.” When the deadline passes, the app checks the real price and prints a receipt stamped <strong>HIT</strong> or <strong>MISS</strong>. Every result updates that source’s trust score, and those scores answer a simple question: when sources disagree, who should you believe?</p>
+
+<div class="demo">
+<div class="receipt">
+<div style="text-align:center"><strong>Receipts</strong><br>Demo Analyst A</div>
+<hr>
+SUI will be at or above $1 by Friday
+<hr>
+<div class="r"><span>Confidence</span><strong>70%</strong></div>
+<div class="r"><span>Called</span><strong>≥ $1.00</strong></div>
+<div class="r"><span>Observed</span><strong>$0.86</strong></div>
+<div class="r"><span>Checked via</span><strong>Tatum</strong></div>
+<div style="text-align:center"><span class="stamp">MISS</span></div>
+<div style="font-size:10px">walrus:Zk3v…MnU</div>
+</div>
+<p class="cap">An example receipt (demo data). Every real one carries a Walrus blob ID.</p>
+</div>
+
+<h2>How it uses Walrus Memory</h2>
+<ul>
+<li>Every call and every result is stored as its own memory on <strong>mainnet</strong>, written with <code>remember</code> and read back with <code>recall</code>.</li>
+<li>Each source gets its own namespace, so a reputation is built only from that source’s history.</li>
+<li>Every write returns a blob ID. It is printed on the receipt and used to generate the receipt’s barcode.</li>
+<li>Trust scores are <strong>never stored</strong>. They are recomputed from recalled memories on every request.</li>
+</ul>
+<p>That last choice is the whole point. If the memory changes, the product’s behavior changes. The learning lives in Walrus, not in the page.</p>
+
+<h2>How it uses Tatum</h2>
+<ul>
+<li>The <strong>Tatum Data API</strong> supplies the price at resolution time, which decides HIT or MISS.</li>
+<li>The <strong>Tatum Sui GraphQL gateway</strong> supplies the latest checkpoint, stamped on every result. The resolver also supports wallet-balance claims through the same gateway.</li>
+</ul>
+<div class="note"><strong>A lesson from the build.</strong> My first Sui calls used JSON-RPC and came back <code>404</code>. Asking the gateway’s <code>/_methods</code> endpoint what it supports showed a GraphQL endpoint only, so I moved every Sui read into one function. The checkpoint is a timestamp anchor to Sui’s state at the moment of checking. It does not prove the price itself.</div>
+
+<h2>How it learned over time</h2>
+<p>Callers state how confident they are. Trust is built from a <strong>Brier score</strong>, which measures the gap between stated confidence and what happened, then blended with a neutral starting point so one lucky call can’t make anyone look great. Every source starts at 75. A confident miss costs more than a cautious one.</p>
+<table>
+<tr><th>Record (computed from the formula)</th><th>Trust</th></tr>
+<tr><td>No resolved calls</td><td>75</td></tr>
+<tr><td>One MISS at 70% confidence</td><td>69</td></tr>
+<tr><td>MISS at 90% and HIT at 60% (overconfident)</td><td>66</td></tr>
+<tr><td>HITs at 80%, 80%, and 70% (well calibrated)</td><td>85</td></tr>
+</table>
+<p>Then the part that shows memory changing the product. Ask two sources the same question. With <strong>memory off</strong>, they count equally. With <strong>memory on</strong>, each answer is weighted by the track record recalled from Walrus, so the result moves toward the more reliable source. If every source has the same record, memory moves nothing, which is the honest answer.</p>
+
+<h2>What was hard</h2>
+<p>Walrus Memory is in beta, and one write ran past the SDK’s 60-second wait. The error was clear: the job was still running, and re-sending would have stored it twice. Recall is semantic search, so I tagged each memory with a prefix and parsed the results myself. Both were manageable, and both are worth knowing before you build.</p>
+
+<h2>Limits, and what is next</h2>
+<ul>
+<li>The price is read when you press Resolve, not at the exact deadline. The delay is saved with each result.</li>
+<li>Sources are names, not verified identities, and the demo analysts are fictional.</li>
+<li>Next: scheduled resolution at each deadline, historical price at the exact deadline, wallet-balance calls in the form, and pay-per-lookup trust scores with x402 on Sui.</li>
+</ul>
+
+<h2>Try it</h2>
+<ul>
+<li><a href="https://receipts-two-rho.vercel.app/">Live app</a></li>
+<li><a href="https://github.com/Tihlumina/receipts">Source code</a></li>
+<li><a href="https://youtu.be/0rq948BNKg8?si=CHAwA6xzFSkl9cYh">Demo video</a></li>
+<li><a href="https://tatum.io/hackathon/total-recall">The hackathon</a></li>
+</ul>
+</article>
+<footer>Built by TIHLUMINA for the Walrus x Tatum Hackathon: Total Recall. Thanks to the Walrus Foundation and Tatum.</footer>
+</main>
+</body>
+</html>
